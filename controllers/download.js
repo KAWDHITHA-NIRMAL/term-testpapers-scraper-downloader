@@ -1,8 +1,7 @@
-// import axios from "axios"
+import axios from "axios"
 import path from 'path'
 import fs from 'fs';
 import fsp from 'fs/promises';
-import https from 'https'
 
 async function createPath(_path) {
     if (!(fs.existsSync(_path))) {
@@ -22,30 +21,44 @@ const download = async (uris, _path, grade, subject) => {
         await createPath(__path)
 
         //Download files
+        if(!uris)throw new Error("fucked up")
+        console.log(uris.length)
         for (let i in uris) {
+            let x = uris[i].split('https://pastpapers.wiki/').join('')
+            x = x.slice(x.indexOf("grade-10"))
+            x = x.split('/')
+            x.shift()
+            x.shift()
+           x =  x.join('') + '.pdf'
             const filePath = path.join(
-              __path,
-              uris[i].split('https://pastpapers.wiki/').join('').split('/').join('') + '.pdf'
+                __path,
+                x
             );
-            const file = fs.createWriteStream(filePath);
-        
-            https.get(uris[i], response => {
-              response.pipe(file);
-            });
-        
-            file.on('finish', () => {
-              console.log(uris[i] + ' downloaded...');
-            });
-        
-            file.on('error', (err )=> {
-              throw new Error(err);
-            });
-          }
-        }        
-    catch (err) {
-            throw new Error(err)
-        }
+            if(x.startsWith('wp-adminadmin-ajax.php'))continue;
+            const writer = fs.createWriteStream(filePath);
 
-        return __path
+            const response = await axios({
+                url: uris[i],
+                method: 'GET',
+                responseType: 'stream',
+            });
+
+            response.data.pipe(writer);
+
+            await new Promise((resolve, reject) => {
+                writer.on('finish', resolve);
+                writer.on('error', ()=>{
+                 console.log('err')
+                });
+            });
+
+            console.log(uris[i] + ' downloaded...');
+        }
     }
+    catch (err) {
+        throw new Error(err)
+    }
+
+    return __path
+}
 export { download }

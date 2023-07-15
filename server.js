@@ -23,6 +23,6 @@ async function start(grade, subject, _path) {
     const path = await download(uris, _path, grade, subject)
 }
 
-start(10, "ict", "temp")
+start(10, "mathematics", "temp")
 
 app.listen(_port, () => console.log(`Server is listening to port:${_port}`))
