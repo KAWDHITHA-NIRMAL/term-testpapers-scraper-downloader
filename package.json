@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "rm -rf ./temp/* &&  node server.js",
-    "dev": "rm -rf ./temp/* &&  nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "clean": "rm -rf ./temp/* && echo Files cleaned successfully"
   },
   "keywords": [],
   "author": "",
