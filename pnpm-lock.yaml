@@ -23,9 +23,6 @@ dependencies:
   fs:
     specifier: 0.0.1-security
     version: 0.0.1-security
-  pastpapers:
-    specifier: 'link:'
-    version: 'link:'
 
 devDependencies:
   nodemon:
